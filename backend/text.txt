@@ -1,1 +1,8 @@
-hello
+commands:
+
+1 - npm i express mongoose nodemon bycrypt.js cors dotenv jsonwebtoken cookie-parser
+bycrypt - password ko encrypt
+cors - middleware for frontend and backend
+dotenv - jo files kisi ko show nii krna h 
+jsonwebtoken - token for new users jo cookie pe store hoga
+cookie-parser - cookie ke liye
