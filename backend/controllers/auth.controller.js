@@ -37,3 +37,46 @@ export const signUp = async (req, res) => {
         return res.status(500).json({message:`signUp error ${error}`})
     }
 }
+
+// now login ke liye banayenge
+
+export const login = async(req, res) => {
+    try {
+        // body se name email & password lenge
+        let {email, password} = req.body
+
+        // if user already exists to error throw krwa denge
+        let user = await User.findOne({email}) // database se find kr rhe "User" is from user_model.js
+        if(!user){
+            return res.status(400).json({message: "User does not exist"})
+        }
+        // if user exists then compare password
+        let isMatch = await bcrypt.compare(password, user.password)
+        if(!isMatch){
+            return res.status(400).json({message:"Incorrect Password"})
+        }
+        let token = await genToken(user._id)
+
+        //now is token ko cookie ke andr parse krna h
+        res.cookie("token", token,{
+            httpOnly:true, //jb secure hoga then https jo jayega av only http h
+            secure: process.env.NODE_ENVIRONMENT = "production", // jb NODE_ENVIRONMENT production me chl jayega tb secure ho jayega
+            sameSite : "strict",
+            maxAge: 7*24*60*60*1000 // 7 days to millisec me
+
+        })
+        return res.status(200).json(user)
+    } catch (error) {
+        return res.status(500).json({message:`login error ${error}`})
+    }
+}
+
+export const logout = async(req, res)=>{
+    try {
+        res.clearCookie("token")
+        return res.status(200).json({message:"Logout successful"})
+    } catch (error) {
+        return res.status(500).json({message:`logou error ${error}`})
+
+    }
+}
