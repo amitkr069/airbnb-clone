@@ -1,11 +1,34 @@
-import React, { useState } from "react";
+import React, { useContext, useState } from "react";
 import { AiOutlineEye, AiOutlineEyeInvisible } from "react-icons/ai";
 import { useNavigate } from "react-router-dom";
 import { FaArrowLeft } from "react-icons/fa";
-
+import axios from 'axios';
+import { authDataContext } from "../context/AuthContext";
 function SignUp() {
   const [showPassword, setShowPassword] = useState(false);
   let navigate = useNavigate();
+
+  let {serverUrl} = useContext(authDataContext)
+  let [name, setName] = useState("")
+  let [email, setEmail] = useState("")
+  let [password, setPassword] = useState("")
+  
+  //axios install karenge wo backend se data ko fetch karega
+  // axios ke through post request se data fetch hoga 
+  const handleSignUP = async(e)=>{
+    try {
+      e.preventDefault()
+      let result = await axios.post(serverUrl + "/api/auth/signup",{
+        name,
+        email,
+        password
+        // ye sb values body se le rhe h
+      }, {withCredentials: true})
+      console.log(result)
+    } catch (error) {
+      console.log(error)
+    }
+  }
   return (
     <div className="min-h-screen flex items-center justify-center bg-gray-100 relative">
       <div
@@ -19,7 +42,7 @@ function SignUp() {
         <h2 className="text-2xl font-bold text-center mb-6">
           Welcome to AirBnb
         </h2>
-        <form>
+        <form action="" onSubmit={handleSignUP}>
           <div>
             <label className="block text-sm font-medium text-gray-700 mb-1">
               Name
@@ -29,6 +52,8 @@ function SignUp() {
               name="name"
               required
               className="w-full border border-gray-300 rounded-lg p-2 focus:outline-none focus:ring-2 focus:ring-blue-500"
+              onChange={(e)=>setName(e.target.value)}
+              value= {name}
             />
           </div>
 
@@ -41,6 +66,8 @@ function SignUp() {
               name="email"
               required
               className="w-full border border-gray-300 rounded-lg p-2 focus:outline-none focus:ring-2 focus:ring-blue-500"
+              onChange={(e)=>setEmail(e.target.value)}
+              value= {email}
             />
           </div>
 
@@ -53,6 +80,8 @@ function SignUp() {
               name="password"
               required
               className="w-full border border-gray-300 rounded-lg p-2 pr-10 focus:outline-none focus:ring-2 focus:ring-blue-500"
+              onChange={(e)=>setPassword(e.target.value)}
+              value= {password}
             />
             <div
               className="absolute inset-y-0 right-0 flex items-center pr-3 pt-5 cursor-pointer"

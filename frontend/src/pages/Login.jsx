@@ -1,11 +1,30 @@
-import React, { useState } from "react";
+import React, { useContext, useState } from "react";
 import { AiOutlineEye, AiOutlineEyeInvisible } from "react-icons/ai";
 import { useNavigate } from "react-router-dom";
 import { FaArrowLeft } from "react-icons/fa";
+import { authDataContext } from "../context/AuthContext";
+import axios from 'axios';
 
 function Login() {
   const [showPassword, setShowPassword] = useState(false);
+  let {serverUrl} = useContext(authDataContext)
+
+  let [email, setEmail] = useState("")
+  let [password, setPassword] = useState("")
   let navigate = useNavigate();
+  const handleLogin = async(e)=>{
+      try {
+        e.preventDefault()
+        let result = await axios.post(serverUrl + "/api/auth/login",{
+          email,
+          password
+          // ye sb values body se le rhe h
+        }, {withCredentials: true})
+        console.log(result)
+      } catch (error) {
+        console.log(error)
+      }
+    }
   return (
     <div className="min-h-screen flex items-center justify-center bg-gray-100">
       <div
@@ -19,7 +38,7 @@ function Login() {
         <h2 className="text-2xl font-bold text-center mb-6">
           Welcome to AirBnb
         </h2>
-        <form>
+        <form action="" onSubmit={handleLogin}>
           <div>
             <label className="block text-sm font-medium text-gray-700 mb-1">
               Email
@@ -29,6 +48,8 @@ function Login() {
               name="email"
               required
               className="w-full border border-gray-300 rounded-lg p-2 focus:outline-none focus:ring-2 focus:ring-blue-500"
+            
+              onChange={(e)=>setEmail(e.target.value)} value={email}
             />
           </div>
 
@@ -41,6 +62,9 @@ function Login() {
               name="password"
               required
               className="w-full border border-gray-300 rounded-lg p-2 pr-10 focus:outline-none focus:ring-2 focus:ring-blue-500"
+            
+              onChange={(e)=>setPassword(e.target.value)} value={password}
+
             />
             <div
               className="absolute inset-y-0 right-0 flex items-center pr-3 pt-5 cursor-pointer"

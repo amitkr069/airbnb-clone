@@ -1,9 +1,16 @@
-import React from 'react'
-
-export default function AuthContext() {
+// this is for connecting frontend to backend
+import React, { createContext } from 'react'
+export const authDataContext = createContext()
+export default function AuthContext({children}) {
+    const serverUrl = "http://localhost:8000"
+    let value={
+        serverUrl 
+    } 
   return (
     <div>
-      
+      <authDataContext.Provider value = {value}>
+        {children}
+      </authDataContext.Provider>
     </div>
   )
 }
